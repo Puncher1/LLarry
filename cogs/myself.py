@@ -16,7 +16,7 @@ class MySelf(commands.Cog):
     @commands.command(aliases=["s"])
     @commands.is_owner()
     async def shutdown(self, ctx: commands.Context):
-        """A command that shuts down the bot."""
+        """Shuts down the bot."""
         await ctx.message.add_reaction(g.e_white_checkmark)
         await self.client.close()
 
