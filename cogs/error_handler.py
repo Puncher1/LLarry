@@ -32,7 +32,7 @@ def full_traceback():
 
 
 class ErrorListeners(commands.Cog):
-    """A cog that represents ``on_command_error`` and ``on_error``."""
+    """Represents ``on_command_error`` and ``on_error``."""
 
     def __init__(self, client):
         self.client = client

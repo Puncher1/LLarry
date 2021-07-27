@@ -3,7 +3,7 @@ from discord.ext import commands
 
 
 class Global(commands.Cog):
-
+    """Global variables"""
     def __init__(self, client):
         self.client = client
 

@@ -8,7 +8,7 @@ from cogs.global_ import Global as g
 
 
 class MySelf(commands.Cog):
-
+    """Commands for Puncher"""
     def __init__(self, client: commands.Bot):
         self.client = client
 
