@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 
 import os
+import time
 from dotenv import load_dotenv
 # end imports
 
@@ -12,6 +13,21 @@ intents = discord.Intents.all()
 client = commands.Bot(command_prefix="-", case_insensitive=True, intents=intents)
 client.activity = discord.Activity(name="on villages", type=discord.ActivityType.watching)
 
+start = time.perf_counter()
+
+# Event: OnReady
+@client.event
+async def on_ready():
+    end = time.perf_counter()
+    duration = round(end - start / 1000, 2)
+    print(f"[MAIN] Ready! [Duration: {duration}s]")
+
+
+# Event: OnConnect
+@client.event
+async def on_connect():
+    print(f"[MAIN] Connected to Discord.")
+
 
 # Loading cogs
 cog_count = 0
@@ -21,9 +37,12 @@ for filename in os.listdir('./cogs'):
         cog_count += 1
 
 if not os.listdir('./cogs'):
-    print('Loaded 0 cogs')
+    print(f'[MAIN] {cog_count} cogs loaded.')
 
 else:
-    print(f'Loaded {cog_count} cogs')
+    print(f'[MAIN] {cog_count} cogs loaded.')
 
+
+print("[MAIN] Boot up...")
+print("[MAIN] Connecting to Discord...")
 client.run(os.getenv("DISCORD_TOKEN"))
