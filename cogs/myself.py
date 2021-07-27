@@ -2,17 +2,23 @@ from discord.ext import commands
 import os
 
 from utils import general
-from utils import global_ as g
 from cogs import error_handler
-
-
+from cogs.global_ import Global as g
 # end imports
 
 
 class MySelf(commands.Cog):
 
-    def __init__(self, client):
+    def __init__(self, client: commands.Bot):
         self.client = client
+
+    # Command: Shutdown
+    @commands.command(aliases=["s"])
+    @commands.is_owner()
+    async def shutdown(self, ctx: commands.Context):
+        """A command that shuts down the bot."""
+        await ctx.message.add_reaction(g.e_white_checkmark)
+        await self.client.close()
 
 
     # Command: Cog reload
@@ -141,7 +147,7 @@ class MySelf(commands.Cog):
                         image_url=None,
                         return_embed=False
                     )
-                    return 
+                    return
 
             else:
                 try:
