@@ -1,6 +1,8 @@
 import sys
 import traceback
+import discord
 from discord.ext import commands
+import aiohttp
 
 from utils import general
 from cogs.global_ import Global
@@ -83,11 +85,53 @@ class ErrorListeners(commands.Cog):
         if isinstance(error, commands.CommandNotFound):
             return
 
-        if isinstance(error, commands.NotOwner):
+        elif isinstance(error, commands.NotOwner):
             if ctx.command.name.lower() in IGNORED_COMMANDS:
                 return
             else:
                 await log_traceback()
+
+        elif isinstance(error, commands.MissingRequiredArgument):
+            error_png = discord.File("./images/error.png", filename="error.png")
+            signature = f"{ctx.prefix}{ctx.command.qualified_name} {ctx.command.signature}"
+
+            missing_embed = await general.embed_gen(
+                ctx.channel,
+                None,
+                f"**A required argument is missing!** "
+                f"\nPlease try again."
+                f"\n\n**Usage:**"
+                f"\n`{signature}`",
+                None,
+                None,
+                None,
+                Global.error_red,
+                True
+            )
+            missing_embed.set_author(name="Error", icon_url="attachment://error.png")
+            await ctx.send(embed=missing_embed, file=error_png)
+
+        elif isinstance(error, commands.CommandInvokeError):
+            error_msg = error.args[0].split("NotFound:")[-1].strip()
+            if error_msg == "notFound (status code: 404)":
+                error_png = discord.File("./images/error.png", filename="error.png")
+                signature = f"{ctx.prefix}{ctx.command.qualified_name} {ctx.command.signature}"
+
+                not_found_embed = await general.embed_gen(
+                    ctx.channel,
+                    None,
+                    f"**I can't find this player!** "
+                    f"\nPlease try again."
+                    f"\n\n**Usage:**"
+                    f"\n`{signature}`",
+                    None,
+                    None,
+                    None,
+                    Global.error_red,
+                    True
+                )
+                not_found_embed.set_author(name="Error", icon_url="attachment://error.png")
+                await ctx.send(embed=not_found_embed, file=error_png)
 
         else:
             await log_traceback()
