@@ -6,7 +6,7 @@ from utils import general
 from cogs.global_ import Global
 # end imports
 
-IGNORED_COMMANDS = ["reload"]
+IGNORED_COMMANDS = ["reload", "shutdown"]
 # end global constants
 
 
