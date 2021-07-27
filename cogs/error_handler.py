@@ -1,9 +1,9 @@
 import sys
 import traceback
-import discord
 from discord.ext import commands
 
-from utils import global_, general
+from utils import general
+from cogs.global_ import Global
 # end imports
 
 IGNORED_COMMANDS = ["reload"]
@@ -46,7 +46,7 @@ class ErrorListeners(commands.Cog):
         lines = traceback.format_exception(etype, error, trace)
         full_traceback_text = ''.join(lines)
 
-        error_channel = self.client.get_channel(global_.error_channel)
+        error_channel = self.client.get_channel(Global.error_channel)
         await general.embed_gen(
             error_channel,
             f"An error occurred. Event: {event}",
@@ -54,7 +54,7 @@ class ErrorListeners(commands.Cog):
             None,
             None,
             None,
-            global_.error_red,
+            Global.error_red,
             False
         )
 
@@ -68,7 +68,7 @@ class ErrorListeners(commands.Cog):
             lines = traceback.format_exception(etype, error, trace)
             full_traceback_text = ''.join(lines)
 
-            error_channel = self.client.get_channel(global_.error_channel)
+            error_channel = self.client.get_channel(Global.error_channel)
             await general.embed_gen(
                 error_channel,
                 f"An error occurred. Command: {ctx.command}",
@@ -76,15 +76,18 @@ class ErrorListeners(commands.Cog):
                 None,
                 None,
                 None,
-                global_.error_red,
+                Global.error_red,
                 False
             )
 
         if isinstance(error, commands.CommandNotFound):
             return
 
-        if ctx.command.name.lower() in IGNORED_COMMANDS:
-            return
+        if isinstance(error, commands.NotOwner):
+            if ctx.command.name.lower() in IGNORED_COMMANDS:
+                return
+            else:
+                await log_traceback()
 
         else:
             await log_traceback()
