@@ -1,16 +1,27 @@
 import discord
 from discord.ext import commands
+import coc
 
 import os
 import time
 from dotenv import load_dotenv
 # end imports
 
+
 # Discord Bot setup
 load_dotenv()
 
 intents = discord.Intents.all()
-client = commands.Bot(command_prefix="-", case_insensitive=True, intents=intents)
+coc_client = coc.login(os.getenv("COC_MAIL"), os.getenv("COC_PW"))
+
+class LLarry(commands.Bot):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.coc_client = coc_client
+
+
+client = LLarry(command_prefix="-", case_insensitive=True, intents=intents)
 client.activity = discord.Activity(name="on villages", type=discord.ActivityType.watching)
 
 start = time.perf_counter()
@@ -27,6 +38,12 @@ async def on_ready():
 @client.event
 async def on_connect():
     print(f"[MAIN] Connected to Discord.")
+
+
+# Event: OnDisconnect
+@client.event
+async def on_disconnect():
+    client.coc_client.close()
 
 
 # Loading cogs
