@@ -18,7 +18,7 @@ class Global(commands.Cog):
     e_white_checkmark = "✅"
 
     # Hex colors
-    error_red = 0xBB0000
+    error_red = 0xb90000
 
 
 def setup(client):
