@@ -132,6 +132,8 @@ class ErrorListeners(commands.Cog):
                 )
                 not_found_embed.set_author(name="Error", icon_url="attachment://error.png")
                 await ctx.send(embed=not_found_embed, file=error_png)
+            else:
+                await log_traceback()
 
         else:
             await log_traceback()
