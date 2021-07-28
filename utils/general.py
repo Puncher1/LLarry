@@ -43,7 +43,7 @@ async def embed_gen(
     embed.title = title if title else Empty
     embed.description = description if description else Empty
     embed.set_footer(text=footer_text if footer_text else Empty)
-    embed.set_thumbnail(url=thumbnail_url if footer_text else Empty)
+    embed.set_thumbnail(url=thumbnail_url if thumbnail_url else Empty)
     embed.set_image(url=image_url if image_url else Empty)
     embed.colour = color if color else Empty
 
