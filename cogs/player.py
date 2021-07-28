@@ -21,8 +21,7 @@ class Player(commands.Cog):
 
         p = await self.client.coc_client.get_player(player_tag=tag)
 
-        # Player
-
+        # Player information
         gold_value = p.get_achievement("Gold Grab").value
         gold_formatted = formatting.num_formatting(gold_value)
 
@@ -128,7 +127,7 @@ class Player(commands.Cog):
         else:
             labels = "No labels selected."
 
-        # Clan
+        # Clan information
         if p.clan is None:
             clan_information = "Not in clan."
         else:
