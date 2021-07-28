@@ -63,7 +63,6 @@ class ErrorListeners(commands.Cog):
     # OnCommandError
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error):
-
         async def log_traceback():
             etype = type(error)
             trace = error.__traceback__
