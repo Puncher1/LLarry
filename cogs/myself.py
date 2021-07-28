@@ -1,7 +1,7 @@
 from discord.ext import commands
 import os
 
-from utils import general
+from utils import embeds
 from cogs import error_handler
 from cogs.global_ import Global as g
 # end imports
@@ -111,7 +111,7 @@ class MySelf(commands.Cog):
 
             error = error if error else "No error while reloading."
 
-            await general.embed_gen(
+            await embeds.embed_gen(
                 channel=ctx.channel,
                 color=None,
                 title="Cogs",
@@ -136,7 +136,7 @@ class MySelf(commands.Cog):
                     short_trace = error_handler.short_traceback()
                     error = f"```py\n{short_trace}\n```"
 
-                    await general.embed_gen(
+                    await embeds.embed_gen(
                         channel=ctx.channel,
                         title="Cogs",
                         description=f"**An error occurred.**"
@@ -156,7 +156,7 @@ class MySelf(commands.Cog):
                     short_trace = error_handler.short_traceback()
                     error = f"```py\n{short_trace}\n```"
 
-                    await general.embed_gen(
+                    await embeds.embed_gen(
                         channel=ctx.channel,
                         title="Cogs",
                         description=f"**An error occurred.**"
@@ -172,7 +172,7 @@ class MySelf(commands.Cog):
             reloaded_str = f"{g.e_reload} **Reloaded**" \
                            f"\n`{path}`"
 
-            await general.embed_gen(
+            await embeds.embed_gen(
                 channel=ctx.channel,
                 color=None,
                 title="Cogs",

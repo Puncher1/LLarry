@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 import aiohttp
 
-from utils import general
+from utils import embeds
 from cogs.global_ import Global
 # end imports
 
@@ -49,7 +49,7 @@ class ErrorListeners(commands.Cog):
         full_traceback_text = ''.join(lines)
 
         error_channel = self.client.get_channel(Global.error_channel)
-        await general.embed_gen(
+        await embeds.embed_gen(
             error_channel,
             f"An error occurred. Event: {event}",
             f"```py\n{full_traceback_text}\n```",
@@ -70,7 +70,7 @@ class ErrorListeners(commands.Cog):
             full_traceback_text = ''.join(lines)
 
             error_channel = self.client.get_channel(Global.error_channel)
-            await general.embed_gen(
+            await embeds.embed_gen(
                 error_channel,
                 f"An error occurred. Command: {ctx.command}",
                 f"```py\n{full_traceback_text}\n```",
@@ -94,7 +94,7 @@ class ErrorListeners(commands.Cog):
             error_png = discord.File("./images/error.png", filename="error.png")
             signature = f"{ctx.prefix}{ctx.command.qualified_name} {ctx.command.signature}"
 
-            missing_embed = await general.embed_gen(
+            missing_embed = await embeds.embed_gen(
                 ctx.channel,
                 None,
                 f"**A required argument is missing!** "
@@ -116,7 +116,7 @@ class ErrorListeners(commands.Cog):
                 error_png = discord.File("./images/error.png", filename="error.png")
                 signature = f"{ctx.prefix}{ctx.command.qualified_name} {ctx.command.signature}"
 
-                not_found_embed = await general.embed_gen(
+                not_found_embed = await embeds.embed_gen(
                     ctx.channel,
                     None,
                     f"**I can't find this player!** "

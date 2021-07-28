@@ -4,7 +4,7 @@ import coc
 import typing
 
 from main import LLarry
-from utils import general
+from utils import embeds, formatting
 from cogs.global_ import Global as g
 # end
 
@@ -24,19 +24,19 @@ class Player(commands.Cog):
         # Player
 
         gold_value = p.get_achievement("Gold Grab").value
-        gold_formatted = general.num_formatting(gold_value)
+        gold_formatted = formatting.num_formatting(gold_value)
 
         elixir_value = p.get_achievement("Elixir Escapade").value
-        elixir_formatted = general.num_formatting(elixir_value)
+        elixir_formatted = formatting.num_formatting(elixir_value)
 
         dark_elixir_value = p.get_achievement("Heroic Heist").value
-        dark_elixir_formatted = general.num_formatting(dark_elixir_value)
+        dark_elixir_formatted = formatting.num_formatting(dark_elixir_value)
 
         troops_donated = p.get_achievement("Friend in Need").value
-        troops_donated_formatted = general.num_formatting(troops_donated)
+        troops_donated_formatted = formatting.num_formatting(troops_donated)
 
         spells_donated = p.get_achievement("Sharing is caring").value
-        spells_donated_formatted = general.num_formatting(spells_donated)
+        spells_donated_formatted = formatting.num_formatting(spells_donated)
 
         clan_games = p.get_achievement("Games Champion").value
         total_attacks_won = p.get_achievement("Conqueror").value
@@ -138,7 +138,7 @@ class Player(commands.Cog):
                                f"\n> **Position:** `{p.role}`" \
                                f"\n> **Members:** `{clan.member_count}`"
 
-        embed_player = await general.embed_gen(
+        embed_player = await embeds.embed_gen(
             ctx.channel,
             None,
             None,
