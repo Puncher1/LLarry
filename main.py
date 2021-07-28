@@ -22,7 +22,7 @@ class LLarry(commands.Bot):
 
 
 client = LLarry(command_prefix="-", case_insensitive=True, intents=intents)
-client.activity = discord.Activity(name="on villages", type=discord.ActivityType.watching)
+client.activity = discord.Activity(name="lightnings ⚡️", type=discord.ActivityType.watching)
 
 start = time.perf_counter()
 
@@ -38,12 +38,6 @@ async def on_ready():
 @client.event
 async def on_connect():
     print(f"[MAIN] Connected to Discord.")
-
-
-# Event: OnDisconnect
-@client.event
-async def on_disconnect():
-    client.coc_client.close()
 
 
 # Loading cogs
