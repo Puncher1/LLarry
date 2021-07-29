@@ -1,8 +1,6 @@
 import discord
 import mysql.connector
 from discord.ext import commands
-import coc
-import typing
 
 from main import LLarry
 from utils import embeds, formatting, db_connector
@@ -147,7 +145,7 @@ class Player(commands.Cog):
             g.zap_color,
             True
         )
-        embed_player.set_author(name=f"{p.name} ({p.tag})", icon_url=league_icon_url)
+        embed_player.set_author(name=f"{p.name} ({p.tag})", icon_url=league_icon_url, url=p.share_link)
 
         embed_player.add_field(name=f"{g.e_clan} Clan Info", value=f"{clan_information}", inline=False)
         embed_player.add_field(name=f"Trophies", value=trophies)
@@ -313,6 +311,25 @@ class Player(commands.Cog):
             await self.sending_player(ctx, p.tag)
 
 
+    @commands.command()
+    async def league(self, ctx, tag):
+        """Shows a high resolution image of the current league of a player."""
+        await ctx.trigger_typing()
+        p = await self.client.coc_client.get_player(tag)
+        league_icon_url = p.league.icon.medium
+
+        league_embed = await embeds.embed_gen(
+            ctx.channel,
+            None,
+            None,
+            None,
+            None,
+            league_icon_url,
+            g.zap_color,
+            True
+        )
+        league_embed.set_author(name=f"{p.name} ({p.tag})")
+        await ctx.send(embed=league_embed)
 
 def setup(client):
     client.add_cog(Player(client))
