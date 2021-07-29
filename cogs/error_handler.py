@@ -63,6 +63,9 @@ class ErrorListeners(commands.Cog):
     # OnCommandError
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error):
+        error_png = discord.File("./images/error.png", filename="error.png")
+        # end local constants
+
         async def log_traceback():
             etype = type(error)
             trace = error.__traceback__
@@ -88,10 +91,20 @@ class ErrorListeners(commands.Cog):
             if ctx.command.name.lower() in IGNORED_COMMANDS:
                 return
             else:
-                await log_traceback()
+                not_owner_embed = await embeds.embed_gen(
+                    ctx.channel,
+                    None,
+                    f"**You don't have sufficient permissions to use that!**",
+                    None,
+                    None,
+                    None,
+                    Global.error_red,
+                    True
+                )
+                not_owner_embed.set_author(name="Error", icon_url="attachment://error.png")
+                await ctx.channel(embed=not_owner_embed, file=error_png)
 
         elif isinstance(error, commands.MissingRequiredArgument):
-            error_png = discord.File("./images/error.png", filename="error.png")
             signature = f"{ctx.prefix}{ctx.command.qualified_name} {ctx.command.signature}"
 
             missing_embed = await embeds.embed_gen(
@@ -119,8 +132,8 @@ class ErrorListeners(commands.Cog):
                 not_found_embed = await embeds.embed_gen(
                     ctx.channel,
                     None,
-                    f"**I can't find this player!** "
-                    f"\nPlease try again."
+                    f"**Resource not found!** "
+                    f"\nMake sure you provide a valid tag and then try again."
                     f"\n\n**Usage:**"
                     f"\n`{signature}`",
                     None,
