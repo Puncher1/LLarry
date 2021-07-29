@@ -48,7 +48,6 @@ async def embed_gen(
     embed.colour = color if color else Empty
 
     if not return_embed:
-        await channel.trigger_typing()
         message = await channel.send(embed=embed)
         return message
 
