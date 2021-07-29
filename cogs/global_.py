@@ -39,6 +39,8 @@ class Global(commands.Cog):
     e_wall_wrecker = f"<:wallwrecker:870017176852123658>"
     e_spells_donation = f"<:spellsdonation:870017176617222154>"
     e_clan = "<:clan:870066665600221194>"
+    e_checkmark = "<:checkmark:870277471092764672>"
+    e_xmark = "<:xmark:870277471071776778>"
 
     e_label_veteran = "<:veteran:870037558099333190>"
     e_label_trophypushing = "<:trophypushing:870037557826682910>"
@@ -63,6 +65,8 @@ class Global(commands.Cog):
     zap_color = 0x29b6ee
 
     error_red = 0xb90000
+    success_green = 0x36cf21
+    unsuccessful_red = 0xf51616
 
     # Other
     space_character = "　"
