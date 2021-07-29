@@ -1,10 +1,11 @@
 import discord
+import mysql.connector
 from discord.ext import commands
 import coc
 import typing
 
 from main import LLarry
-from utils import embeds, formatting
+from utils import embeds, formatting, db_connector
 from cogs.global_ import Global as g
 # end
 
@@ -14,10 +15,9 @@ class Player(commands.Cog):
     def __init__(self, client: LLarry):
         self.client = client
 
-    # Command: player
-    @commands.command()
-    async def player(self, ctx, tag):
-        """Returns information about a player in Clash of Clans."""
+
+    async def sending_player(self, ctx, tag):
+        """Sending player information."""
 
         p = await self.client.coc_client.get_player(player_tag=tag)
 
@@ -175,8 +175,144 @@ class Player(commands.Cog):
         embed_player.add_field(name=f"_ _", value=f"_ _")
         embed_player.add_field(name="Labels", value=labels)
 
-
         await ctx.send(embed=embed_player)
+
+
+
+    # Command: player
+    @commands.command()
+    async def player(self, ctx, tag):
+        """Returns information about a player."""
+        await ctx.trigger_typing()
+        await self.sending_player(ctx, tag)
+
+
+    @commands.command(aliases=["playerlink", "player-link", "link-player", "p-link"])
+    async def linkplayer(self, ctx: commands.Context, tag):
+        """Linking a player with you."""
+
+        await ctx.trigger_typing()
+        p = await self.client.coc_client.get_player(tag)
+        db = db_connector.db_connect()
+
+        try:
+            sql = f"INSERT INTO linked_players (UserID, Tag) VALUES (%s, %s)"
+            val = (ctx.author.id, p.tag)
+            db.mycursor.execute(sql, val)
+            db.connection.commit()
+
+        except mysql.connector.IntegrityError:
+            sql = f"SELECT Tag FROM linked_players WHERE UserID = {ctx.author.id}"
+            db.mycursor.execute(sql)
+            result = db.mycursor.fetchall()
+            selected_tag = result[0][0]
+            if selected_tag == p.tag:
+                await embeds.embed_gen(
+                    ctx.channel,
+                    "Link player",
+                    f"{g.e_xmark} `{p.name} ({p.tag})` is already linked with you.",
+                    None,
+                    None,
+                    None,
+                    g.unsuccessful_red,
+                    False
+                )
+                return
+
+            else:
+                sql = f"UPDATE linked_players SET Tag = '{p.tag}' WHERE UserID = '{ctx.author.id}'"
+                db.mycursor.execute(sql)
+                db.connection.commit()
+
+        db.connection.close()
+
+        await embeds.embed_gen(
+            ctx.channel,
+            "Link player",
+            f"{g.e_checkmark} Successfully linked player `{p.name} ({p.tag})` with you.",
+            None,
+            None,
+            None,
+            g.success_green,
+            False
+        )
+
+
+    @commands.command(aliases=["playerunlink", "player-unlink", "unlink-player", "p-unlink"])
+    async def unlinkplayer(self, ctx: commands.Context):
+        """Unlinking the linked player from you."""
+
+        await ctx.trigger_typing()
+        db = db_connector.db_connect()
+
+        sql = f"SELECT Tag FROM linked_players WHERE UserID = {ctx.author.id}"
+        db.mycursor.execute(sql)
+        result = db.mycursor.fetchall()
+        if not result:
+            await embeds.embed_gen(
+                ctx.channel,
+                "Unlink player",
+                f"{g.e_xmark} You're not linked with an account.",
+                None,
+                None,
+                None,
+                g.unsuccessful_red,
+                False
+            )
+
+        else:
+            p = await self.client.coc_client.get_player(result[0][0])
+
+            sql = f"DELETE FROM linked_players WHERE UserID = '{ctx.author.id}'"
+            db.mycursor.execute(sql)
+            db.connection.commit()
+
+            await embeds.embed_gen(
+                ctx.channel,
+                "Unlink player",
+                f"{g.e_checkmark} Successfully unlinked player `{p.name} ({p.tag})` from you.",
+                None,
+                None,
+                None,
+                g.success_green,
+                False
+            )
+
+        db.connection.close()
+
+
+    @commands.command(aliases=["p"])
+    async def profile(self, ctx):
+        """Sends information about the player which is linked with you."""
+
+        await ctx.trigger_typing()
+        db = db_connector.db_connect()
+        sql = f"SELECT Tag FROM linked_players WHERE UserID = {ctx.author.id}"
+        db.mycursor.execute(sql)
+        result = db.mycursor.fetchall()
+        if not result:
+            x_mark = discord.File("./images/xmark.png", filename="xmark.png")
+
+            embed_not_linked = await embeds.embed_gen(
+                ctx.channel,
+                None,
+                None,
+                None,
+                None,
+                None,
+                g.unsuccessful_red,
+                True
+            )
+            embed_not_linked.set_author(name="You're not linked with a player.", icon_url="attachment://xmark.png")
+            await ctx.send(embed=embed_not_linked, file=x_mark)
+
+        else:
+            selected_tag = result[0][0]
+            p = await self.client.coc_client.get_player(selected_tag)
+
+            await self.sending_player(ctx, p.tag)
+
+
 
 def setup(client):
     client.add_cog(Player(client))
