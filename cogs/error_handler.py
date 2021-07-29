@@ -2,7 +2,6 @@ import sys
 import traceback
 import discord
 from discord.ext import commands
-import aiohttp
 
 from utils import embeds
 from cogs.global_ import Global
