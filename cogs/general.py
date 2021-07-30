@@ -1,8 +1,8 @@
 import discord
 from discord.ext import commands
 
-from utils import embeds, buttons
-from utils.buttons import HelpSelectMenu
+from utils import embeds, components
+from utils.components import SelectMenuHandler
 from cogs.global_ import Global as g
 # end imports
 
@@ -84,7 +84,7 @@ class Help(commands.HelpCommand):
         current_embed = help_embed
         while not timeout:
             view = discord.ui.View()
-            view.add_item(HelpSelectMenu(client, select_list, self.context.author, "Choose a category", False))
+            view.add_item(SelectMenuHandler(select_list, "Choose a category", False, self.context.author))
 
             if not help_msg:
                 help_msg = await channel.send(embed=current_embed, view=view)
@@ -126,7 +126,7 @@ class Help(commands.HelpCommand):
 
             else:
                 view = discord.ui.View()
-                view.add_item(HelpSelectMenu(client, select_list, self.context.author, "Disabled due to timeout", True))
+                view.add_item(SelectMenuHandler(select_list, "Disabled due to timeout", True, self.context.author))
                 await help_msg.edit(embed=current_embed, view=view)
 
 class General(commands.Cog):
