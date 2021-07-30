@@ -4,6 +4,7 @@ from discord.ext import commands
 
 from main import Zap
 from utils import embeds, formatting, db_connector
+from utils.components import ButtonHandler
 from cogs.global_ import Global as g
 # end
 
@@ -173,8 +174,72 @@ class Player(commands.Cog):
         embed_player.add_field(name=f"_ _", value=f"_ _")
         embed_player.add_field(name="Labels", value=labels)
 
-        await ctx.send(embed=embed_player)
+        view = discord.ui.View(timeout=2)
+        view.add_item(ButtonHandler(style=discord.ButtonStyle.green, url=None, disabled=False,
+                                    label="Troops", emoji=None, button_user=ctx.author, custom_id="Troops"))
 
+        view.add_item(ButtonHandler(style=discord.ButtonStyle.grey, url=p.share_link, disabled=False,
+                                    label="Open in-game", emoji=None, button_user=None, custom_id=None))
+
+        timeout = False
+        player_msg = None
+
+        current_embed = embed_player
+        current_view = view
+        while not timeout:
+
+            if not player_msg:
+                player_msg = await ctx.send(embed=current_embed, view=current_view)
+            else:
+                await player_msg.edit(embed=current_embed, view=current_view)
+            timeout = await current_view.wait()
+            if not timeout:
+                if current_view.value == "Troops":
+                    embed_troops = await embeds.embed_gen(
+                        ctx.channel,
+                        None,
+                        "**Troops**"
+                        "\nTroops hier",
+                        None,
+                        town_hall_link,
+                        None,
+                        g.zap_color,
+                        True
+                    )
+                    embed_troops.set_author(name=f"{p.name} ({p.tag})", icon_url=league_icon_url)
+
+                    view = discord.ui.View(timeout=2)
+                    view.add_item(ButtonHandler(style=discord.ButtonStyle.green, url=None, disabled=False,
+                                                label="Statistics", emoji=None, button_user=ctx.author, custom_id="Statistics"))
+
+                    view.add_item(ButtonHandler(style=discord.ButtonStyle.grey, url=p.share_link, disabled=False,
+                                                label="Open in-game", emoji=None, button_user=None, custom_id=None))
+                    current_embed = embed_troops
+                    current_view = view
+
+                elif current_view.value == "Statistics":
+
+                    view = discord.ui.View(timeout=2)
+                    view.add_item(ButtonHandler(style=discord.ButtonStyle.green, url=None, disabled=False,
+                                                label="Troops", emoji=None, button_user=ctx.author,
+                                                custom_id="Troops"))
+
+                    view.add_item(ButtonHandler(style=discord.ButtonStyle.grey, url=p.share_link, disabled=False,
+                                                label="Open in-game", emoji=None, button_user=None, custom_id=None))
+                    current_embed = embed_player
+                    current_view = view
+
+            else:
+                current_label = current_view.children[0].to_component_dict()['label']
+
+                view = discord.ui.View()
+                view.add_item(ButtonHandler(style=discord.ButtonStyle.green, url=None, disabled=True,
+                                            label=current_label, emoji=None, button_user=ctx.author, custom_id=current_label))
+                view.add_item(ButtonHandler(style=discord.ButtonStyle.grey, url=p.share_link, disabled=False,
+                                            label="Open in-game", emoji=None, button_user=None, custom_id=None))
+                current_view = view
+
+                await player_msg.edit(embed=current_embed, view=current_view)
 
 
     # Command: player
@@ -182,6 +247,10 @@ class Player(commands.Cog):
     async def player(self, ctx, tag):
         await ctx.trigger_typing()
         await self.sending_player(ctx, tag)
+
+        clan = await self.client.coc_client.get_clan("2l2ugr2jr")
+        print(clan.badge.medium)
+
 
 
     @commands.command(aliases=["playerlink", "player-link", "link-player", "p-link"], description="Linking a player with you.")
