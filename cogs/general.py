@@ -26,7 +26,7 @@ class Help(commands.HelpCommand):
 
         channel = self.get_destination()
         client = self.context.bot
-        owner = client.get_user(client.owner_id)
+        owner = client.get_user(g.owner)
         help_embed = await embeds.embed_gen(
             channel,
             "Help",
@@ -36,7 +36,7 @@ class Help(commands.HelpCommand):
             f"\n[] optional"
             f"\n\n-help [command] for additional help on a command."
             f"\n```",
-            None,
+            f"Requested by {self.context.author}",
             client.user.avatar.url,
             None,
             g.zap_color,
@@ -84,7 +84,7 @@ class Help(commands.HelpCommand):
         current_embed = help_embed
         while not timeout:
             view = discord.ui.View()
-            view.add_item(HelpSelectMenu(client, select_list))
+            view.add_item(HelpSelectMenu(client, select_list, self.context.author, "Choose a category", False))
 
             if not help_msg:
                 help_msg = await channel.send(embed=current_embed, view=view)
@@ -106,10 +106,9 @@ class Help(commands.HelpCommand):
                         f"\n```diff"
                         f"\n<> required"
                         f"\n[] optional"
-                        f"\nDo NOT type these when using a command!"
                         f"\n\n-help [command] for additional info about a command."
                         f"\n```",
-                        None,
+                        f"Requested by {self.context.author}",
                         client.user.avatar.url,
                         None,
                         g.zap_color,
@@ -126,7 +125,9 @@ class Help(commands.HelpCommand):
                     current_embed = cog_embed
 
             else:
-                await help_msg.delete()
+                view = discord.ui.View()
+                view.add_item(HelpSelectMenu(client, select_list, self.context.author, "Disabled due to timeout", True))
+                await help_msg.edit(embed=current_embed, view=view)
 
 class General(commands.Cog):
     """General commands."""
