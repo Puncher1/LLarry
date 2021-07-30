@@ -7,8 +7,11 @@ class Global(commands.Cog):
     def __init__(self, client):
         self.client = client
 
+    # Users
+    owner = 305354423801217025
 
-    # Channel
+
+    # Channels
     error_channel = 764227729653628949
 
     # Emojis
