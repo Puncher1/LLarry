@@ -14,24 +14,22 @@ load_dotenv()
 intents = discord.Intents.all()
 coc_client = coc.login(os.getenv("COC_MAIL"), os.getenv("COC_PW"))
 
-class LLarry(commands.Bot):
+class Zap(commands.Bot):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.coc_client = coc_client
+        self.puncher = self.get_user(self.owner_id)
 
 
-client = LLarry(command_prefix="-", case_insensitive=True, intents=intents)
+client = Zap(command_prefix="-", case_insensitive=True, intents=intents)
 client.activity = discord.Activity(name="lightnings ⚡️", type=discord.ActivityType.watching)
 
-start = time.perf_counter()
 
 # Event: OnReady
 @client.event
 async def on_ready():
-    end = time.perf_counter()
-    duration = round(end - start / 1000, 2)
-    print(f"[MAIN] Ready! [Duration: {duration}s]")
+    print(f"[MAIN] Ready!")
 
 
 # Event: OnConnect
