@@ -2,17 +2,17 @@ import discord
 import mysql.connector
 from discord.ext import commands
 
-from main import LLarry
+from main import Zap
 from utils import embeds, formatting, db_connector
 from cogs.global_ import Global as g
 # end
 
 
 class Player(commands.Cog):
-    """CoC-Player related commands."""
-    def __init__(self, client: LLarry):
+    """Player related commands."""
+    def __init__(self, client: Zap):
         self.client = client
-
+        self.name = f"{g.e_shield} {self.qualified_name}"
 
     async def sending_player(self, ctx, tag):
         """Sending player information."""
@@ -178,16 +178,14 @@ class Player(commands.Cog):
 
 
     # Command: player
-    @commands.command()
+    @commands.command(description="Returns information about a player.")
     async def player(self, ctx, tag):
-        """Returns information about a player."""
         await ctx.trigger_typing()
         await self.sending_player(ctx, tag)
 
 
-    @commands.command(aliases=["playerlink", "player-link", "link-player", "p-link"])
+    @commands.command(aliases=["playerlink", "player-link", "link-player", "p-link"], description="Linking a player with you.")
     async def linkplayer(self, ctx: commands.Context, tag):
-        """Linking a player with you."""
 
         await ctx.trigger_typing()
         p = await self.client.coc_client.get_player(tag)
@@ -236,9 +234,8 @@ class Player(commands.Cog):
         )
 
 
-    @commands.command(aliases=["playerunlink", "player-unlink", "unlink-player", "p-unlink"])
+    @commands.command(aliases=["playerunlink", "player-unlink", "unlink-player", "p-unlink"], description="Unlinking the linked player from you.")
     async def unlinkplayer(self, ctx: commands.Context):
-        """Unlinking the linked player from you."""
 
         await ctx.trigger_typing()
         db = db_connector.db_connect()
@@ -279,9 +276,8 @@ class Player(commands.Cog):
         db.connection.close()
 
 
-    @commands.command(aliases=["p"])
+    @commands.command(aliases=["p"], description="Sends information about the player which is linked with you.")
     async def profile(self, ctx):
-        """Sends information about the player which is linked with you."""
 
         await ctx.trigger_typing()
         db = db_connector.db_connect()
@@ -311,9 +307,8 @@ class Player(commands.Cog):
             await self.sending_player(ctx, p.tag)
 
 
-    @commands.command()
+    @commands.command(description="Shows a high resolution image of the current league of a player.")
     async def league(self, ctx, tag):
-        """Shows a high resolution image of the current league of a player."""
         await ctx.trigger_typing()
         p = await self.client.coc_client.get_player(tag)
         league_icon_url = p.league.icon.medium
