@@ -41,6 +41,7 @@ class Global(commands.Cog):
     e_clan = "<:clan:870066665600221194>"
     e_checkmark = "<:checkmark:870277471092764672>"
     e_xmark = "<:xmark:870277471071776778>"
+    e_gem = "<:gem:870407153217851462>"
 
     e_label_veteran = "<:veteran:870037558099333190>"
     e_label_trophypushing = "<:trophypushing:870037557826682910>"
@@ -70,6 +71,7 @@ class Global(commands.Cog):
 
     # Other
     space_character = "　"
+    ignored_help_cogs = ["ErrorListeners", "Global"]
 
 
 def setup(client):
