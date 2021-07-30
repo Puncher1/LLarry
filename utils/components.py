@@ -8,7 +8,7 @@ from cogs.global_ import Global as g
 
 
 class SelectMenuHandler(ui.Select):
-    """Adds a SelectMenu to a specific message and returns it's value on selecting an option."""
+    """Adds a SelectMenu to a specific message and returns it's value when option selected."""
 
     def __init__(self,
                  options: list,
@@ -29,7 +29,7 @@ class SelectMenuHandler(ui.Select):
 
 
 class ButtonHandler(ui.Button):
-    """Adds a Button to a specific message and returns it's value on pressing it."""
+    """Adds a Button to a specific message and returns it's value when pressed."""
 
     def __init__(self,
                  label: typing.Union[str, None],
