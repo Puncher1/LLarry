@@ -7,25 +7,24 @@ from cogs.global_ import Global as g
 # end imports
 
 
-class MySelf(commands.Cog):
-    """Commands for Puncher"""
+class Myself(commands.Cog):
+    """Commands for Puncher."""
     def __init__(self, client: commands.Bot):
         self.client = client
+        self.name = f"{g.e_gem} {self.qualified_name}"
 
     # Command: Shutdown
-    @commands.command(aliases=["s"])
+    @commands.command(aliases=["s"], description="Shuts down the bot.")
     @commands.is_owner()
     async def shutdown(self, ctx: commands.Context):
-        """Shuts down the bot."""
         await ctx.message.add_reaction(g.e_white_checkmark)
         await self.client.close()
 
 
     # Command: Cog reload
-    @commands.command(aliases=["cr", "r"])
+    @commands.command(aliases=["cr", "r"], description="Reloads cogs, loads cogs that aren't loaded and unloads cogs whose file doesn't exist anymore.")
     @commands.is_owner()
     async def reload(self, ctx, *, path=None):
-        """Reloads cogs, loads cogs that aren't loaded and unloads cogs whose file doesn't exist anymore."""
 
         # All cogs reload
         async def all_cogs_reloading():
@@ -191,4 +190,4 @@ class MySelf(commands.Cog):
 
 
 def setup(client: commands.Bot):
-    client.add_cog(MySelf(client))
+    client.add_cog(Myself(client))
