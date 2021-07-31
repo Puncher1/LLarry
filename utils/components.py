@@ -24,7 +24,7 @@ class SelectMenuHandler(ui.Select):
 
     async def callback(self, interaction: discord.Interaction):
         if self.select_user is None or interaction.user == self.select_user:
-            self.view.value = interaction.data["values"][0]
+            self.view.value = self.values
             self.view.stop()
 
 
@@ -55,7 +55,7 @@ class ButtonHandler(ui.Button):
             if self.custom_id_ is None:
                 self.view.value = None
             else:
-                self.view.value = interaction.data["custom_id"]
+                self.view.value = self.custom_id
 
             self.view.stop()
 
