@@ -24,13 +24,14 @@ class Myself(commands.Cog):
     # Command: Cog reload
     @commands.command(aliases=["cr", "r"], description="Reloads cogs, loads cogs that aren't loaded and unloads cogs whose file doesn't exist anymore.")
     @commands.is_owner()
-    async def reload(self, ctx, *, path=None):
+    async def reload(self, ctx: commands.Context, *, path=None):
 
         # All cogs reload
         async def all_cogs_reloading():
             """Reloads every extension in './cogs'. Loads extensions that aren't loaded. Unloads extensions whose file doesn't exist anymore."""
 
             error = None
+            full_trace = None
 
             # Unload deleted extension files
             unloaded_list, unloaded_count = [], 0
@@ -66,6 +67,7 @@ class Myself(commands.Cog):
                             self.client.reload_extension(f'cogs.{filename[:-3]}')
                         except:
                             short_trace = error_handler.short_traceback()
+                            full_trace = error_handler.full_traceback()
                             error = f"```py\n{short_trace}\n```"
                             break
 
@@ -80,6 +82,7 @@ class Myself(commands.Cog):
                             self.client.load_extension(f'cogs.{filename[:-3]}')
                         except:
                             short_trace = error_handler.short_traceback()
+                            full_trace = error_handler.full_traceback()
                             error = f"```py\n{short_trace}\n```"
                             break
 
@@ -108,7 +111,7 @@ class Myself(commands.Cog):
             else:
                 unloaded_str = ""
 
-            error = error if error else "No error while reloading."
+            error = f"{error}" if error else "No error while reloading."
 
             await embeds.embed_gen(
                 channel=ctx.channel,
@@ -124,6 +127,19 @@ class Myself(commands.Cog):
                 image_url=None,
                 return_embed=False
             )
+
+            if full_trace:
+                error_logs = self.client.get_channel(g.error_channel)
+                await embeds.embed_gen(
+                    error_logs,
+                    f"An error accured. Command: {ctx.command}",
+                    f"```py\n{full_trace}\n```",
+                    None,
+                    None,
+                    None,
+                    g.error_red,
+                    False
+                )
 
         # Cog reload by path
         async def path_cog_reload():
