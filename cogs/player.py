@@ -1,4 +1,5 @@
 import discord
+from discord import emoji
 import mysql.connector
 from discord.ext import commands
 
@@ -174,7 +175,7 @@ class Player(commands.Cog):
         embed_player.add_field(name=f"_ _", value=f"_ _")
         embed_player.add_field(name="Labels", value=labels)
 
-        view = discord.ui.View(timeout=2)
+        view = discord.ui.View()
         view.add_item(ButtonHandler(style=discord.ButtonStyle.green, url=None, disabled=False,
                                     label="Troops", emoji=None, button_user=ctx.author, custom_id="Troops"))
 
@@ -195,11 +196,224 @@ class Player(commands.Cog):
             timeout = await current_view.wait()
             if not timeout:
                 if current_view.value == "Troops":
+
+                    home_troops_emojis = {
+                        "Barbarian": g.e_barbarian,
+                        "Archer": g.e_archer,
+                        "Giant": g.e_giant,
+                        "Goblin": g.e_goblin,
+                        "Wall Breaker": g.e_wallbreaker,
+                        "Balloon": g.e_balloon,
+                        "Wizard": g.e_wizzard,
+                        "Healer": g.e_healer,
+                        "Dragon": g.e_dragon,
+                        "P.E.K.K.A": g.e_pekka,
+                        "Baby Dragon": g.e_babydragon,
+                        "Miner": g.e_miner,
+                        "Electro Dragon": g.e_electrodragon,
+                        "Yeti": g.e_yeti,
+                        "Dragon Rider": g.e_dragonrider,
+                        "Minion": g.e_minion,
+                        "Hog Rider": g.e_hogrider,
+                        "Valkyrie": g.e_valkyre,
+                        "Golem": g.e_golem,
+                        "Witch": g.e_witch,
+                        "Lava Hound": g.e_lavahound,
+                        "Bowler": g.e_bowler,
+                        "Ice Golem": g.e_icegolem,
+                        "Headhunter": g.e_headhunter
+                    }
+
+                    builder_troops_emojis = {
+                        "Raged Barbarian": g.e_ragebarbarian,
+                        "Sneaky Archer": g.e_sneakyarcher,
+                        "Boxer Giant": g.e_boxergiant,
+                        "Beta Minion": g.e_betaminion,
+                        "Bomber": g.e_bomber,
+                        "Baby Dragon": g.e_babydragon,
+                        "Cannon Cart": g.e_cannoncart,
+                        "Night Witch": g.e_nightwitch,
+                        "Drop Ship": g.e_dropship,
+                        "Super P.E.K.K.A": g.e_superpekka,
+                        "Hog Glider": g.e_hogglider
+                    }
+
+                    spells_emojis = {
+                        "Lightning Spell": g.e_lightning_spell,
+                        "Healing Spell": g.e_healing_spell,
+                        "Rage Spell": g.e_rage_spell,
+                        "Jump Spell": g.e_jump_spell,
+                        "Freeze Spell": g.e_freeze_spell,
+                        "Clone Spell": g.e_clone_spell,
+                        "Invisibility Spell": g.e_invisibility_spell,
+                        "Poison Spell": g.e_poison_spell,
+                        "Earthquake Spell": g.e_earthquake_spell,
+                        "Haste Spell": g.e_haste_spell,
+                        "Skeleton Spell": g.e_skeleton_spell,
+                        "Bat Spell": g.e_bat_spell
+                    }
+
+                    not_unlocked = []
+
+                    in_player_troops = [troop.name for troop in p.troops]
+                    in_player_spells = [spell.name for spell in p.spells]
+                    in_player_heroes = [hero.name for hero in p.heroes]
+
+                    # Home Village
+                    home_troops = []
+                    ht_index = 1
+                    for home_troop_name in list(home_troops_emojis):
+                        home_troop = p.get_troop(home_troop_name, is_home_troop=True)
+
+                        if home_troop_name not in in_player_troops:
+                            string = f"{home_troops_emojis[home_troop_name]} ` N/A `"
+
+                            not_unlocked.append(string)
+                            continue
+
+                        else:
+                            if home_troop.level >= 10:
+                                current_lvl = f"{home_troop.level}"
+                            else:
+                                current_lvl = f" {home_troop.level}"
+
+                            if home_troop.max_level >= 10:
+                                max_lvl = f"{home_troop.max_level}"
+                            else:
+                                max_lvl = f"{home_troop.max_level} "
+
+                            string = f"{home_troops_emojis[home_troop_name]} `{current_lvl}/{max_lvl}`"
+
+                        if ht_index % 4 == 0:
+                            string += "\n"
+                        else:
+                            string += f"{g.space_character}"
+
+                        home_troops.append(string)
+                        ht_index += 1
+
+                    # Builder Base
+                    builder_troops = []
+                    bb_index = 1
+                    for builder_troop_name in list(builder_troops_emojis):
+                        builder_troop = p.get_troop(builder_troop_name, is_home_troop=False)
+
+                        if builder_troop_name not in in_player_troops:
+                            string = f"{builder_troops_emojis[builder_troop_name]}  ` N/A `"
+
+                            not_unlocked.append(string)
+                            continue
+
+                        else:
+                            if builder_troop.level >= 10:
+                                current_lvl = f"{builder_troop.level}"
+                            else:
+                                current_lvl = f" {builder_troop.level}"
+
+                            if builder_troop.max_level >= 10:
+                                max_lvl = f"{builder_troop.max_level}"
+                            else:
+                                max_lvl = f"{builder_troop.max_level} "
+
+                            string = f"{builder_troops_emojis[builder_troop_name]} `{current_lvl}/{max_lvl}`"
+
+                        if bb_index % 4 == 0:
+                            string += "\n"
+                        else:
+                            string += f"{g.space_character}"
+
+                        builder_troops.append(string)
+                        bb_index += 1
+
+                    # Spells
+                    spells = []
+                    spell_index = 1
+                    for spell_name in list(spells_emojis):
+                        spell_obj = p.get_spell(spell_name)
+
+                        if spell_name not in in_player_spells:
+                            string = f"{spells_emojis[spell_name]} ` N/A `"
+
+                            not_unlocked.append(string)
+                            continue
+
+                        else:
+                            if spell_obj.level >= 10:
+                                current_lvl = f"{spell_obj.level}"
+                            else:
+                                current_lvl = f" {spell_obj.level}"
+
+                            if spell_obj.max_level >= 10:
+                                max_lvl = f"{spell_obj.max_level}"
+                            else:
+                                max_lvl = f"{spell_obj.max_level} "
+
+                            string = f"{spells_emojis[spell_name]} `{current_lvl}/{max_lvl}`"
+
+                        if spell_index % 4 == 0:
+                            string += "\n"
+                        else:
+                            string += f"{g.space_character}"
+
+                        spells.append(string)
+                        spell_index += 1
+
+                    # Heroes
+                    heroes = []
+                    hero_index = 1
+                    for hero_name in list(heroes_emojis):
+                        hero = p.get_hero(hero_name)
+
+                        if hero_name not in in_player_heroes:
+                            string = f"{heroes_emojis[hero_name]}  ` N/A `"
+
+                            not_unlocked.append(string)
+                            continue
+
+                        else:
+                            if hero.level >= 10:
+                                current_lvl = f"{hero.level}"
+                            else:
+                                current_lvl = f" {hero.level}"
+
+                            if hero.max_level >= 10:
+                                max_lvl = f"{hero.max_level}"
+                            else:
+                                max_lvl = f"{hero.max_level} "
+
+                            string = f"{heroes_emojis[hero_name]} `{current_lvl}/{max_lvl}`"
+
+                        if hero_index % 4 == 0:
+                            string += "\n"
+                        else:
+                            string += f"{g.space_character}"
+
+                        heroes.append(string)
+                        hero_index += 1
+
+                    # Not Unlocked
+                    not_unlocked_index = 1
+                    not_unlocked_final = []
+                    for not_unlocked_obj in not_unlocked:
+                        if not_unlocked_index % 4 == 0:
+                            not_unlocked_obj += "\n"
+                        else:
+                            not_unlocked_obj += f"{g.space_character}"
+
+                        not_unlocked_final.append(not_unlocked_obj)
+                        not_unlocked_index += 1
+
+
+                    home_troops_str = "".join(home_troops)
+                    builder_troops_str = "".join(builder_troops)
+                    spells_str = "".join(spells)
+                    heroes_str = "".join(heroes)
+                    not_unlocked_str = "".join(not_unlocked_final)
+
                     embed_troops = await embeds.embed_gen(
                         ctx.channel,
                         None,
-                        "**Troops**"
-                        "\nTroops hier",
+                        None,
                         None,
                         town_hall_link,
                         None,
@@ -207,8 +421,13 @@ class Player(commands.Cog):
                         True
                     )
                     embed_troops.set_author(name=f"{p.name} ({p.tag})", icon_url=league_icon_url)
+                    embed_troops.add_field(name="Home Village", value=home_troops_str, inline=False)
+                    embed_troops.add_field(name="Builder Base", value=builder_troops_str, inline=False)
+                    embed_troops.add_field(name="Spells", value=spells_str, inline=False)
+                    embed_troops.add_field(name="Heroes", value=heroes_str, inline=False)
+                    embed_troops.add_field(name="Not Unlocked", value=not_unlocked_str, inline=False)
 
-                    view = discord.ui.View(timeout=2)
+                    view = discord.ui.View()
                     view.add_item(ButtonHandler(style=discord.ButtonStyle.green, url=None, disabled=False,
                                                 label="Statistics", emoji=None, button_user=ctx.author, custom_id="Statistics"))
 
@@ -219,7 +438,7 @@ class Player(commands.Cog):
 
                 elif current_view.value == "Statistics":
 
-                    view = discord.ui.View(timeout=2)
+                    view = discord.ui.View()
                     view.add_item(ButtonHandler(style=discord.ButtonStyle.green, url=None, disabled=False,
                                                 label="Troops", emoji=None, button_user=ctx.author,
                                                 custom_id="Troops"))
@@ -247,11 +466,6 @@ class Player(commands.Cog):
     async def player(self, ctx, tag):
         await ctx.trigger_typing()
         await self.sending_player(ctx, tag)
-
-        clan = await self.client.coc_client.get_clan("2l2ugr2jr")
-        print(clan.badge.medium)
-
-
 
     @commands.command(aliases=["playerlink", "player-link", "link-player", "p-link"], description="Linking a player with you.")
     async def linkplayer(self, ctx: commands.Context, tag):
