@@ -10,4 +10,4 @@ def num_formatting(num):
     if magnitude == 0:
         return num
     else:
-        return '%.2f%s' % (num, ['', 'K', 'M', 'G', 'T', 'P'][magnitude])
+        return '%.2f%s' % (num, ['', 'K', 'M', 'G', 'T', 'P'][magnitude]) # K = 1'000, M = 1'000'000, G = 1'000'000'000, T = 1'000'000'000'000, P = 1'000'000'000'000'000
