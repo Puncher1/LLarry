@@ -24,7 +24,7 @@ class SelectMenuHandler(ui.Select):
 
     async def callback(self, interaction: discord.Interaction):
         if self.select_user is None or interaction.user == self.select_user:
-            self.view.value = self.values
+            self.view.value = self.values[0]
             self.view.stop()
 
 
