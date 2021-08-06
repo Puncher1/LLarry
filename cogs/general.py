@@ -11,7 +11,9 @@ class Help(commands.HelpCommand):
     """A class that represents ``commands.HelpCommand``."""
 
     def get_command_signature(self, command):
-        # creating own signature (<prefix><command> <arguments>)
+        return f"`{self.context.clean_prefix}{command.qualified_name} {command.signature}`"
+
+    def get_additional_signature(self, command):
         return f"`{self.context.clean_prefix}{command.qualified_name} {command.signature}` *{command.description}*"
 
     def get_cog_signature(self, cog):
@@ -106,7 +108,7 @@ class Help(commands.HelpCommand):
                         f"\n```diff"
                         f"\n<> required"
                         f"\n[] optional"
-                        f"\n\n-help [command] for additional info about a command."
+                        f"\n\n-help [command] for additional help on a command."
                         f"\n```",
                         f"Requested by {self.context.author}",
                         client.user.avatar.url,
@@ -117,7 +119,7 @@ class Help(commands.HelpCommand):
                     cog_embed.set_author(name=f"By {owner}", icon_url=owner.avatar.url)
 
                     # get signature (our own signature)
-                    command_signatures = [self.get_command_signature(c) for c in cog_for_help.get_commands()]
+                    command_signatures = [self.get_additional_signature(c) for c in cog_for_help.get_commands()]
 
                     new_desc = f"\n".join(command_signatures)
                     cog_embed.add_field(name=f"{cog_for_help.name}", value=f"{new_desc}")
@@ -129,15 +131,45 @@ class Help(commands.HelpCommand):
                 view.add_item(SelectMenuHandler(select_list, "Disabled due to timeout", True, self.context.author))
                 await help_msg.edit(embed=current_embed, view=view)
 
+
+    async def send_command_help(self, command):
+
+        channel = self.get_destination()
+
+        embed_help_command = await embeds.embed_gen(
+            channel,
+            None,
+            f"{command.help}",
+            None,
+            None,
+            None,
+            g.zap_color,
+            True
+        )
+        if command.aliases:
+            aliases = ", ".join(command.aliases)
+        else:
+            aliases = "None"
+
+        command_signature = self.get_command_signature(command)
+
+        embed_help_command.set_author(name=f"Help {command.qualified_name}")
+        embed_help_command.add_field(name=f"Aliases", value=f"{aliases}")
+        embed_help_command.add_field(name=f"Usage", value=f"{command_signature}")
+
+        await channel.send(embed=embed_help_command)
+
+
 class General(commands.Cog):
-    """General commands."""
+    """General commands"""
     def __init__(self, client):
         self.client = client
         self.name = f"{g.e_attack} {self.qualified_name}"
 
         # Cog assignment for help command
         attributes = {
-            'description': 'Shows this message or additional information on a command.',
+            'description': 'Help message',
+            'help': "To get an overview of all commands or additional help of a specific command.",
             'cooldown': commands.CooldownMapping.from_cooldown(1, 5.0, commands.BucketType.user)
         }
 
