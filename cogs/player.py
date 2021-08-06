@@ -11,7 +11,8 @@ from cogs.global_ import Global as g
 
 
 class Player(commands.Cog):
-    """Player related commands."""
+    """Player commands"""
+
     def __init__(self, client: Zap):
         self.client = client
         self.name = f"{g.e_shield} {self.qualified_name}"
@@ -21,7 +22,6 @@ class Player(commands.Cog):
 
         p = await self.client.coc_client.get_player(player_tag=tag)
 
-        # Player information
         gold_value = p.get_achievement("Gold Grab").value
         gold_formatted = formatting.num_formatting(gold_value)
 
@@ -460,15 +460,21 @@ class Player(commands.Cog):
 
                 await player_msg.edit(embed=current_embed, view=current_view)
 
-
     # Command: player
-    @commands.command(description="Returns information about a player.")
+    @commands.command(description="Player information")
     async def player(self, ctx, tag):
+        """Returns information about a player of Clash of Clans using the player's tag."""
         await ctx.trigger_typing()
         await self.sending_player(ctx, tag)
 
-    @commands.command(aliases=["playerlink", "player-link", "link-player", "p-link"], description="Linking a player with you.")
+
+    # Command: linkplayer
+    @commands.command(aliases=["playerlink", "player-link", "link-player", "p-link"], description="Linking a player with you")
     async def linkplayer(self, ctx: commands.Context, tag):
+        """
+        To link a player of Clash of Clans with your Discord account by using the player's tag.
+        Use `profile` to display the information about the linked player.
+        """
 
         await ctx.trigger_typing()
         p = await self.client.coc_client.get_player(tag)
@@ -517,8 +523,11 @@ class Player(commands.Cog):
         )
 
 
-    @commands.command(aliases=["playerunlink", "player-unlink", "unlink-player", "p-unlink"], description="Unlinking the linked player from you.")
+    @commands.command(aliases=["playerunlink", "player-unlink", "unlink-player", "p-unlink"], description="Unlinking the linked player from you")
     async def unlinkplayer(self, ctx: commands.Context):
+        """
+        To unlink the linked player of Clash of Clans from you by using the player's tag.
+        """
 
         await ctx.trigger_typing()
         db = db_connector.db_connect()
@@ -559,8 +568,11 @@ class Player(commands.Cog):
         db.connection.close()
 
 
-    @commands.command(aliases=["p"], description="Sends information about the player which is linked with you.")
+    @commands.command(aliases=["p"], description="Linked player information")
     async def profile(self, ctx):
+        """
+        To display the information about the player of Clash of Clans which is linked with your Discord account.
+        """
 
         await ctx.trigger_typing()
         db = db_connector.db_connect()
@@ -590,8 +602,12 @@ class Player(commands.Cog):
             await self.sending_player(ctx, p.tag)
 
 
-    @commands.command(description="Shows a high resolution image of the current league of a player.")
+    @commands.command(description="Current league of a player")
     async def league(self, ctx, tag):
+        """
+        To display a high resolution image of the current league of a player of Clash of Clans using the player's tag.
+        """
+
         await ctx.trigger_typing()
         p = await self.client.coc_client.get_player(tag)
         league_icon_url = p.league.icon.medium
