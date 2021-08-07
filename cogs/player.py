@@ -15,7 +15,7 @@ class Player(commands.Cog):
 
     def __init__(self, client: Zap):
         self.client = client
-        self.name = f"{g.e_shield} {self.qualified_name}"
+        self.name = f"{g.e_attack} {self.qualified_name}"
 
     async def sending_player(self, ctx, tag):
         """Sending player information."""
@@ -78,11 +78,13 @@ class Player(commands.Cog):
         if p.league.icon.medium:
             league_icon_url = p.league.icon.medium
         else:
-            league_icon_url = "https://lh3.googleusercontent.com/proxy/X-8nlk3Gx_-Sf7kGRunhBpy79VQDMkQ5evRZEK_4jJDin9NI08W7MP4jIynhex-8RtG__1fgAV2ZbOqd9CNVZgIafWkBwngQV3BNCwo36csmY20"
+            unranked_png = discord.File("./images/Unranked.png", filename="Unranked.png")
+            league_icon_url = "attachment://Unranked.png"
+
         town_hall_link = f"https://coc.guide/static/imgs/other/town-hall-{p.town_hall}{town_hall_weapon}.png"
         trophies = f"{g.e_trophy} `{p.trophies}`"
         level = f"{g.e_level} `{p.exp_level}`"
-        league = f"{g.e_league} `{p.league}`"
+        league = f"{g.e_league_trophy} `{p.league}`"
         best_trophies = f"{g.e_trophy} `{p.best_trophies}`"
         war_stars = f"{g.e_warstar} `{p.war_stars}`"
         attacks_won = f"{g.e_attack} `{p.attack_wins}`"
@@ -106,7 +108,7 @@ class Player(commands.Cog):
         spells_donated = f"{g.e_spells_donation} `{spells_donated_formatted}`"
         total_attacks_won = f"{g.e_attack} `{total_attacks_won}`"
         total_defenses_won = f"{g.e_shield} `{total_defenses_won}`"
-        clan_games_points = f"{g.e_clan_games} `{clan_games}`"
+        clan_games_points = f"{g.e_clan_games_points} `{clan_games}`"
 
         hereos = ""
         for hereo in p.heroes:
@@ -147,6 +149,12 @@ class Player(commands.Cog):
             g.zap_color,
             True
         )
+
+        if league_icon_url == "attachment://Unranked.png":
+            embed_file = unranked_png
+        else:
+            embed_file = None
+
         embed_player.set_author(name=f"{p.name} ({p.tag})", icon_url=league_icon_url, url=p.share_link)
 
         embed_player.add_field(name=f"{g.e_clan} Clan Info", value=f"{clan_information}", inline=False)
@@ -190,7 +198,7 @@ class Player(commands.Cog):
         while not timeout:
 
             if not player_msg:
-                player_msg = await ctx.send(embed=current_embed, view=current_view)
+                player_msg = await ctx.send(embed=current_embed, view=current_view, file=embed_file)
             else:
                 await player_msg.edit(embed=current_embed, view=current_view)
             timeout = await current_view.wait()
@@ -265,7 +273,7 @@ class Player(commands.Cog):
                     for home_troop_name in list(home_troops_emojis):
                         home_troop = p.get_troop(home_troop_name, is_home_troop=True)
 
-                        if home_troop_name not in in_player_troops:
+                        if home_troop_name not in in_player_troops or home_troop is None:
                             string = f"{home_troops_emojis[home_troop_name]} ` N/A `"
 
                             not_unlocked.append(string)
@@ -299,7 +307,7 @@ class Player(commands.Cog):
                         builder_troop = p.get_troop(builder_troop_name, is_home_troop=False)
 
                         if builder_troop_name not in in_player_troops:
-                            string = f"{builder_troops_emojis[builder_troop_name]}  ` N/A `"
+                            string = f"{builder_troops_emojis[builder_troop_name]} ` N/A `"
 
                             not_unlocked.append(string)
                             continue
@@ -365,7 +373,7 @@ class Player(commands.Cog):
                         hero = p.get_hero(hero_name)
 
                         if hero_name not in in_player_heroes:
-                            string = f"{heroes_emojis[hero_name]}  ` N/A `"
+                            string = f"{heroes_emojis[hero_name]} ` N/A `"
 
                             not_unlocked.append(string)
                             continue
@@ -410,22 +418,44 @@ class Player(commands.Cog):
                     heroes_str = "".join(heroes)
                     not_unlocked_str = "".join(not_unlocked_final)
 
+                    if not home_troops_str:
+                        home_troops_str = "None"
+
+                    if not builder_troops_str:
+                        builder_troops_str = "None"
+
+                    if not spells_str:
+                        spells_str = "None"
+
+                    if not heroes_str:
+                        heroes_str = "None"
+
+                    if not not_unlocked_str:
+                        not_unlocked_str = "None"
+
+                    embed_description = f"**Home Village**" \
+                                        f"\n{home_troops_str}" \
+                                        f"\n\n**Builder Base**" \
+                                        f"\n{builder_troops_str}" \
+                                        f"\n\n**Spells**" \
+                                        f"\n{spells_str}" \
+                                        f"\n\n**Heroes**" \
+                                        f"\n{heroes_str}" \
+                                        f"\n\n**Not Unlocked**" \
+                                        f"\n{not_unlocked_str}"
+
                     embed_troops = await embeds.embed_gen(
                         ctx.channel,
                         None,
-                        None,
+                        embed_description,
                         None,
                         town_hall_link,
                         None,
                         g.zap_color,
                         True
                     )
+
                     embed_troops.set_author(name=f"{p.name} ({p.tag})", icon_url=league_icon_url)
-                    embed_troops.add_field(name="Home Village", value=home_troops_str, inline=False)
-                    embed_troops.add_field(name="Builder Base", value=builder_troops_str, inline=False)
-                    embed_troops.add_field(name="Spells", value=spells_str, inline=False)
-                    embed_troops.add_field(name="Heroes", value=heroes_str, inline=False)
-                    embed_troops.add_field(name="Not Unlocked", value=not_unlocked_str, inline=False)
 
                     view = discord.ui.View()
                     view.add_item(ButtonHandler(style=discord.ButtonStyle.green, url=None, disabled=False,
