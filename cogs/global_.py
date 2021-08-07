@@ -45,7 +45,16 @@ class Global(commands.Cog):
     e_checkmark = "<:checkmark:870277471092764672>"
     e_xmark = "<:xmark:870277471071776778>"
     e_gem = "<:gem:870407153217851462>"
-    
+    e_building_tools = "<:buildingtools:873544879114977283>"
+    e_shields = "<:shields:873571043535622164>"
+    e_special_offers = "<:specialoffers:873553634577760318>"
+    e_clan_games_points = "<:cgpoints:873573021007355915>"
+    e_treasure = "<:treasure:873551381183742002>"
+    e_clan_level = "<:clanlevel:873316860735680563>"
+    e_clan_trophy = "<:clantrophy:873578106512887898>"
+    e_league_trophy = "<:leaguetrophy:873574792433917972>"
+    e_barbarian_coc = "<:barbariancoc:873604191896092713>"
+
     e_yeti = "<:yeti:871000221025447936>"
     e_wizzard = "<:wizzard:871000221545553991>"
     e_witch = "<:witch:871000221193211925>"
