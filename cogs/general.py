@@ -47,6 +47,8 @@ class Help(commands.HelpCommand):
         num_lines_main = sum(1 for line in open(f"./main.py", encoding="utf8"))
         line_count += num_lines_main
 
+        line_count = f"{line_count:,}"
+
         # help
         help_embed = await embeds.embed_gen(
             channel,
