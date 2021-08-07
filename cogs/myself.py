@@ -12,7 +12,7 @@ class Myself(commands.Cog):
 
     def __init__(self, client: commands.Bot):
         self.client = client
-        self.name = f"{g.e_gem} {self.qualified_name}"
+        self.name = f"{g.e_special_offers} {self.qualified_name}"
 
     # Command: Shutdown
     @commands.command(aliases=["s"], description="Shuts down the bot")

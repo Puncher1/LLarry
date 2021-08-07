@@ -164,7 +164,7 @@ class General(commands.Cog):
     """General commands"""
     def __init__(self, client):
         self.client = client
-        self.name = f"{g.e_attack} {self.qualified_name}"
+        self.name = f"{g.e_barbarian_coc} {self.qualified_name}"
 
         # Cog assignment for help command
         attributes = {
