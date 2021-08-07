@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import os
 
 from utils import embeds, components
 from utils.components import SelectMenuHandler
@@ -29,10 +30,29 @@ class Help(commands.HelpCommand):
         channel = self.get_destination()
         client = self.context.bot
         owner = client.get_user(g.owner)
+
+        # Count lines
+        line_count = 0
+
+        for filename in os.listdir('./cogs'):
+            if filename.endswith('.py'):
+                num_lines_cogs = sum(1 for line in open(f"./cogs/{filename}", encoding="utf8"))
+                line_count += num_lines_cogs
+
+        for filename in os.listdir('./utils'):
+            if filename.endswith('.py'):
+                num_lines_utils = sum(1 for line in open(f"./utils/{filename}", encoding="utf8"))
+                line_count += num_lines_utils
+
+        num_lines_main = sum(1 for line in open(f"./main.py", encoding="utf8"))
+        line_count += num_lines_main
+
+        # help
         help_embed = await embeds.embed_gen(
             channel,
             "Help",
             f"**Zap!** is a Clash of Clans bot which is aimed to display information about players, clans, and more."
+            f"\n`Coded in {line_count} lines.`"
             f"\n```diff"
             f"\n<> required"
             f"\n[] optional"
@@ -105,6 +125,7 @@ class Help(commands.HelpCommand):
                         channel,
                         "Help",
                         f"**Zap!** is a Clash of Clans bot which is aimed to display information about players, clans, and more."
+                        f"\n`Coded in {line_count} lines.`"
                         f"\n```diff"
                         f"\n<> required"
                         f"\n[] optional"
@@ -118,7 +139,7 @@ class Help(commands.HelpCommand):
                     )
                     cog_embed.set_author(name=f"By {owner}", icon_url=owner.avatar.url)
 
-                    # get signature (our own signature)
+                    # get signature (own signature)
                     command_signatures = [self.get_additional_signature(c) for c in cog_for_help.get_commands()]
 
                     new_desc = f"\n".join(command_signatures)
