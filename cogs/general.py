@@ -158,11 +158,13 @@ class Help(commands.HelpCommand):
     async def send_command_help(self, command):
 
         channel = self.get_destination()
+        barbariancoc_png = discord.File("./images/barbariancoc.png", filename="barbariancoc.png")
+
 
         embed_help_command = await embeds.embed_gen(
             channel,
             None,
-            f"{command.help}",
+            f"{command.help}\n\n_ _",
             None,
             None,
             None,
@@ -170,17 +172,21 @@ class Help(commands.HelpCommand):
             True
         )
         if command.aliases:
-            aliases = ", ".join(command.aliases)
+            aliases_list = []
+            for aliase in command.aliases:
+                aliases_list.append(f"`{aliase}`")
+
+            aliases = ", ".join(aliases_list)
         else:
             aliases = "None"
 
         command_signature = self.get_command_signature(command)
 
-        embed_help_command.set_author(name=f"Help {command.qualified_name}")
-        embed_help_command.add_field(name=f"Aliases", value=f"{aliases}")
-        embed_help_command.add_field(name=f"Usage", value=f"{command_signature}")
+        embed_help_command.set_author(name=f"Help {command.qualified_name}", icon_url="attachment://barbariancoc.png")
+        embed_help_command.add_field(name=f"{g.e_elixir} Aliases", value=f"{aliases}")
+        embed_help_command.add_field(name=f"{g.e_dark_elixir} Usage", value=f"{command_signature}")
 
-        await channel.send(embed=embed_help_command)
+        await channel.send(embed=embed_help_command, file=barbariancoc_png)
 
 
 class General(commands.Cog):
