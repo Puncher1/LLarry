@@ -146,6 +146,24 @@ class ErrorListeners(commands.Cog):
             else:
                 await log_traceback()
 
+        elif isinstance(error, commands.CommandOnCooldown):
+
+            error_seconds = str(error).split("Try again in")[1].strip()
+
+            cooldown_embed = await embeds.embed_gen(
+                ctx.channel,
+                None,
+                f"**Cooldown!**"
+                f"\nYou're on cooldown on `{ctx.command.name}`. Try again in `{error_seconds}`.",
+                None,
+                None,
+                None,
+                Global.error_red,
+                True
+            )
+            cooldown_embed.set_author(name="Error", icon_url="attachment://error.png")
+            await ctx.send(embed=cooldown_embed, file=error_png)
+
         else:
             await log_traceback()
 
