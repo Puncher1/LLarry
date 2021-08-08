@@ -122,6 +122,9 @@ class Global(commands.Cog):
     e_label_activedonator = "<:activedonator:870037555670818827>"
     e_label_activedaily = "<:activedaily:870037555985383474>"
 
+    e_members = "<:members:873890437478371359>"
+    e_type = "<:type:873899488287281182>"
+
     # Hex colors
     zap_color = 0x29b6ee
 
