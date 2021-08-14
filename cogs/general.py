@@ -53,7 +53,7 @@ class Help(commands.HelpCommand):
         help_embed = await embeds.embed_gen(
             channel,
             "Help",
-            f"**Zap!** is a Clash of Clans bot which is aimed to display information about players, clans, and more."
+            f"**Zap** is a Clash of Clans bot which is aimed to display information about players, clans, and more."
             f"\n`Coded in {line_count} lines.`"
             f"\n```diff"
             f"\n<> required"
@@ -126,7 +126,7 @@ class Help(commands.HelpCommand):
                     cog_embed = await embeds.embed_gen(
                         channel,
                         "Help",
-                        f"**Zap!** is a Clash of Clans bot which is aimed to display information about players, clans, and more."
+                        f"**Zap** is a Clash of Clans bot which is aimed to display information about players, clans, and more."
                         f"\n`Coded in {line_count} lines.`"
                         f"\n```diff"
                         f"\n<> required"
