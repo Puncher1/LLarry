@@ -185,7 +185,7 @@ class Player(commands.Cog):
 
         view = discord.ui.View()
         view.add_item(ButtonHandler(style=discord.ButtonStyle.green, label="Troops", custom_id="Troops",
-                                    button_user=ctx.author))
+                                    button_user=ctx.author, interaction_message="NICE", ephemeral=False))
         view.add_item(ButtonHandler(style=discord.ButtonStyle.grey, label="Open in-game",
                                     url=p.share_link, button_user=ctx.author))
 

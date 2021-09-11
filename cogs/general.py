@@ -121,7 +121,7 @@ class Help(commands.HelpCommand):
                 selection_str = view.value
                 cog_for_help = client.get_cog(selection_str)
                 if not cog_for_help:
-                    raise discord.NotFound(f"Cog with name 'selection_str' doesn't exist.", f"Cog with name 'selection_str' doesn't exist.")
+                    raise discord.NotFound(f"Cog with name '{selection_str}' doesn't exist.", f"Cog with name '{selection_str}' doesn't exist.")
                 else:
 
                     cog_embed = await embeds.embed_gen(
@@ -152,7 +152,8 @@ class Help(commands.HelpCommand):
 
             else:
                 view = discord.ui.View()
-                view.add_item(SelectMenuHandler(select_list, "Disabled due to timeout", True, self.context.author))
+                view.add_item(SelectMenuHandler(options=select_list, place_holder="Disabled due to timeout", disabled=True,
+                                                select_user=self.context.author))
                 await help_msg.edit(embed=current_embed, view=view)
 
 

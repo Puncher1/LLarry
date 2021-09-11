@@ -106,6 +106,6 @@ class ButtonHandler(ui.Button):
                 self.view.value = self.custom_id
 
             if self.interaction_message_:
-                interaction.response.send_message(content=self.interaction_message_, ephermal=self.ephemeral_)
+                await interaction.response.send_message(content=self.interaction_message_, ephemeral=self.ephemeral_)
 
             self.view.stop()
