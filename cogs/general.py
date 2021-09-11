@@ -108,8 +108,12 @@ class Help(commands.HelpCommand):
         current_embed = help_embed
         while not timeout:
             view = discord.ui.View()
+<<<<<<< Updated upstream
             view.add_item(SelectMenuHandler(options=select_list, place_holder="Choose a category",
                                             select_user=self.context.author))
+=======
+            view.add_item(SelectMenuHandler(options=select_list, place_holder="Choose a category", select_user=self.context.author))
+>>>>>>> Stashed changes
 
             if not help_msg:
                 help_msg = await channel.send(embed=current_embed, view=view)
