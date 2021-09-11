@@ -184,11 +184,10 @@ class Player(commands.Cog):
         embed_player.add_field(name="Labels", value=labels)
 
         view = discord.ui.View()
-        view.add_item(ButtonHandler(style=discord.ButtonStyle.green, url=None, disabled=False,
-                                    label="Troops", emoji=None, button_user=ctx.author, custom_id="Troops"))
-
-        view.add_item(ButtonHandler(style=discord.ButtonStyle.grey, url=p.share_link, disabled=False,
-                                    label="Open in-game", emoji=None, button_user=None, custom_id=None))
+        view.add_item(ButtonHandler(style=discord.ButtonStyle.green, label="Troops", custom_id="Troops",
+                                    button_user=ctx.author))
+        view.add_item(ButtonHandler(style=discord.ButtonStyle.grey, label="Open in-game",
+                                    url=p.share_link, button_user=ctx.author))
 
         timeout = False
         player_msg = None
